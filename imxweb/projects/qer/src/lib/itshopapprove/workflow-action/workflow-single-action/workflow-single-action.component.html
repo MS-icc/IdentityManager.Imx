@@ -8,20 +8,6 @@
       [attr.data-imx-identifier]="'column_' + cdr.column.ColumnName + '_' + i"
     >
     </imx-cdr-editor>
-    <imx-decision-reason
-      [reasonStandard]="data.actionParameters.justification"
-      [maxReasonType]="data.actionParameters.maxReasonType"
-      [reasonFreetext]="data.actionParameters.reason"
-      (controlCreated)="onFormControlCreated('reason', $event)"
-      data-imx-identifier="workflow-single-action-property-reason"
-    >
-    </imx-decision-reason>
-
-    <ng-container *ngIf="request.pwoData != null">
-      <imx-cdr-editor [cdr]="currentStepCdr" data-imx-identifier="workflow-single-action-current-step"></imx-cdr-editor>
-      <imx-cdr-editor [cdr]="complianceCdr" data-imx-identifier="workflow-single-action-current-step"></imx-cdr-editor>
-    </ng-container>
-
     <imx-busy-indicator *ngIf="busyService.isBusy"></imx-busy-indicator>
     <ng-container *ngIf="data.additionalInfo != null">
       <imx-cdr-editor
