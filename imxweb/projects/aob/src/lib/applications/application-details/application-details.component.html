@@ -12,22 +12,6 @@
           [property]="application?.UID_AccProductGroup"
           icon="serviceaccount"
         ></imx-column-info>
-        <imx-column-info [property]="application?.UID_AERoleOwner" icon="user"></imx-column-info>
-        <imx-application-property [display]="shopsDisplay" icon="library">
-          <div class="imx-application-property-multi">
-            <span *ngIf="!assignedShops.length">{{ '-' + ('#LDS#None assigned' | translate) + '-' }}</span>
-            <span *ngIf="assignedShops.length">{{ assignedShops[0].GetEntity().GetDisplay() }}</span>
-            <button
-              mat-button
-              color="primary"
-              (click)="showMore(assignedShops, shopsDisplay, 'library')"
-              data-imx-identifier="imx-application-details-button-show-more-shops"
-              *ngIf="assignedShops.length > 1"
-            >
-              {{ '#LDS#and {0} more...' | translate | ldsReplace: assignedShops.length - 1 }}
-            </button>
-          </div>
-        </imx-application-property>
       </mat-card-content>
     </mat-card>
     <mat-card class="imx-application-state mat-elevation-z0">
