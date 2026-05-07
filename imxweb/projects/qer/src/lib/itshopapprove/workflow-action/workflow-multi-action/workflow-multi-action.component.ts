@@ -115,7 +115,7 @@ export class WorkflowMultiActionComponent implements OnInit {
       status: BulkItemStatus.valid,
     };
 
-    if (this.data.showValidDate) {
+    if (this.data.showValidDate && !approval.shouldHideValidDateByWorkingMethod()) {
       if (
         (this.data.showValidDate.validFrom && approval.ValidFrom.Column.GetValue() !== '') ||
         approval.ValidFrom.GetMetadata().CanEdit()
@@ -132,7 +132,11 @@ export class WorkflowMultiActionComponent implements OnInit {
       }
     }
 
-    if (approval.ValidUntilProlongation?.value && approval.OrderState.value === 'OrderProlongate') {
+    if (
+      approval.ValidUntilProlongation?.value &&
+      approval.OrderState.value === 'OrderProlongate' &&
+      !approval.shouldHideValidDateByWorkingMethod()
+    ) {
       bulkItem.properties.push(new BaseCdr(approval.ValidUntilProlongation.Column));
     }
 

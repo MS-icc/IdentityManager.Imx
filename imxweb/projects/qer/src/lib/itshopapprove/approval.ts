@@ -107,7 +107,12 @@ export class Approval extends PortalItshopApproveRequests implements RequestPara
   }
 
   public canSetValidFrom(): boolean {
-    return this.ValidFrom.GetMetadata().CanEdit() && !this.entityWrapper.isChiefApproval && this.OrderState.value !== 'OrderUnsubscribe';
+    return (
+      this.ValidFrom.GetMetadata().CanEdit() &&
+      !this.entityWrapper.isChiefApproval &&
+      this.OrderState.value !== 'OrderUnsubscribe' &&
+      !this.shouldHideValidDateByWorkingMethod()
+    );
   }
 
   public canSetValidUntil(itShopConfig: ITShopConfig | undefined): boolean {
@@ -115,8 +120,13 @@ export class Approval extends PortalItshopApproveRequests implements RequestPara
       this.ValidUntil.GetMetadata().CanEdit() &&
       !this.entityWrapper.isChiefApproval &&
       this.OrderState.value !== 'OrderUnsubscribe' &&
+      !this.shouldHideValidDateByWorkingMethod() &&
       (!itShopConfig?.VI_ITShop_ShowValidUntilQERReuse || this.TableName.value !== 'QERReuse')
     );
+  }
+
+  public shouldHideValidDateByWorkingMethod(): boolean {
+    return this.UID_QERWorkingMethod?.value === 'xy';
   }
 
   public updateDirectDecisionTarget(workflow: IEntity): void {
