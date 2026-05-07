@@ -32,6 +32,8 @@ import { RequestParameterDataEntity } from '../itshop/request-info/request-param
 import { WorkflowDataWrapper } from '../itshop/workflow-data-wrapper';
 
 export class Approval extends PortalItshopApproveRequests implements RequestParameterDataEntity {
+  private static readonly hideValidDateWorkingMethod = 'xy';
+
   public get decisionOffset(): number {
     return this.directDecisionTarget - this.DecisionLevel.value;
   }
@@ -126,7 +128,7 @@ export class Approval extends PortalItshopApproveRequests implements RequestPara
   }
 
   public shouldHideValidDateByWorkingMethod(): boolean {
-    return this.UID_QERWorkingMethod?.value === 'xy';
+    return this.UID_QERWorkingMethod?.value === Approval.hideValidDateWorkingMethod;
   }
 
   public updateDirectDecisionTarget(workflow: IEntity): void {
