@@ -128,7 +128,7 @@ export class Approval extends PortalItshopApproveRequests implements RequestPara
   }
 
   public shouldHideValidDateByWorkingMethod(): boolean {
-    return this.UID_QERWorkingMethod?.value === Approval.hideValidDateWorkingMethod;
+    return this.GetEntity().GetColumn('UID_PWODecisionSubMethod')?.GetValue() === Approval.hideValidDateWorkingMethod;
   }
 
   public updateDirectDecisionTarget(workflow: IEntity): void {

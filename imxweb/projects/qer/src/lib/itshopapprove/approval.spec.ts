@@ -52,16 +52,16 @@ describe('Approval', () => {
   }
 
   [
-    { orderState: '', uidWorkingMethod: '', canSet: true },
-    { orderState: 'OrderUnsubscribe', uidWorkingMethod: '', canSet: false },
-    { orderState: '', uidWorkingMethod: 'xy', canSet: false },
+    { orderState: '', uidDecisionSubMethod: '', canSet: true },
+    { orderState: 'OrderUnsubscribe', uidDecisionSubMethod: '', canSet: false },
+    { orderState: '', uidDecisionSubMethod: 'xy', canSet: false },
   ].forEach((testcase) =>
     it('checks if user can set ValidFrom', () => {
       const approval = new Approval({
         commit: () => Promise.resolve(),
         entity: createEntity({
           OrderState: createColumn(testcase.orderState),
-          UID_QERWorkingMethod: createColumn(testcase.uidWorkingMethod),
+          UID_PWODecisionSubMethod: createColumn(testcase.uidDecisionSubMethod),
           ValidFrom: undefined,
         }),
         parameterColumns: [],
@@ -71,16 +71,16 @@ describe('Approval', () => {
   );
 
   [
-    { orderState: '', uidWorkingMethod: '', canSet: true },
-    { orderState: 'OrderUnsubscribe', uidWorkingMethod: '', canSet: false },
-    { orderState: '', uidWorkingMethod: 'xy', canSet: false },
+    { orderState: '', uidDecisionSubMethod: '', canSet: true },
+    { orderState: 'OrderUnsubscribe', uidDecisionSubMethod: '', canSet: false },
+    { orderState: '', uidDecisionSubMethod: 'xy', canSet: false },
   ].forEach((testcase) =>
     it('checks if user can set ValidUntil', () => {
       const approval = new Approval({
         commit: () => Promise.resolve(),
         entity: createEntity({
           OrderState: createColumn(testcase.orderState),
-          UID_QERWorkingMethod: createColumn(testcase.uidWorkingMethod),
+          UID_PWODecisionSubMethod: createColumn(testcase.uidDecisionSubMethod),
           ValidUntil: undefined,
         }),
         parameterColumns: [],
