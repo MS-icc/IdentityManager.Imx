@@ -27,14 +27,7 @@
         data-imx-identifier="workflow-action-property-validUntil"
       >
       </imx-cdr-editor>
-      <imx-decision-reason
-        [maxReasonType]="data.actionParameters.maxReasonType"
-        [reasonStandard]="data.actionParameters.justification"
-        [reasonFreetext]="data.actionParameters.reason"
-        (controlCreated)="formGroup.addControl('reason', $event)"
-        data-imx-identifier="workflow-action-property-reason"
-      >
-      </imx-decision-reason>
+
     </div>
   </mat-card-content>
 </mat-card>
