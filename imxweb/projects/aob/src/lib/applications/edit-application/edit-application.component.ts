@@ -33,8 +33,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { PortalApplication, PortalShops } from '@imx-modules/imx-api-aob';
 import { DbObjectKey, TypedEntity } from '@imx-modules/imx-qbm-dbts';
 import {
+  CdrFactoryService,
   ClassloggerService,
+  ColumnDependentReference,
   ConfirmationService,
+  ExtService,
   LdsReplacePipe,
   SnackBarService,
   TranslationEditorComponent,
@@ -45,6 +48,8 @@ import { ShopsService } from '../../shops/shops.service';
 import { ApplicationContent } from '../application-content.interface';
 import { SelectionContainer } from './selection-container';
 
+export const additionalColumnsForApplicationKey = 'additionalColumnsForApplication';
+
 @Component({
   selector: 'imx-edit-application',
   templateUrl: './edit-application.component.html',
@@ -54,6 +59,7 @@ export class EditApplicationComponent implements ApplicationContent {
 
   public shopsData: TypedEntitySelectionData;
   public accountsData: TypedEntitySelectionData;
+  public customCdrList: ColumnDependentReference[] = [];
 
   @Output() public readonly close = new EventEmitter<string>();
 
@@ -73,6 +79,8 @@ export class EditApplicationComponent implements ApplicationContent {
     private readonly ldsReplace: LdsReplacePipe,
     @Inject(EUI_SIDESHEET_DATA) public application: PortalApplication,
     private readonly dialog: MatDialog,
+    private readonly ext: ExtService,
+    private readonly cdrFactory: CdrFactoryService,
   ) {
     this.sidesheetRef.closeClicked().subscribe(async () => {
       if (!this.hasUnsavedChanges()) {
@@ -87,6 +95,7 @@ export class EditApplicationComponent implements ApplicationContent {
 
     this.accountsData = this.getAccountsData();
     this.shopsData = this.getShopsData();
+    this.customCdrList = this.buildCustomCdrList();
   }
 
   public shopSelectionChanged(selection: TypedEntity[]): void {
@@ -227,6 +236,13 @@ export class EditApplicationComponent implements ApplicationContent {
         this.logger.error(this, 'Attempt to update the accounts failed');
       }
     }
+  }
+
+  private buildCustomCdrList(): ColumnDependentReference[] {
+    const extensions = this.ext.Registry[additionalColumnsForApplicationKey] ?? [];
+    return extensions
+      .map((ext) => this.cdrFactory.buildCdr(this.application.GetEntity(), ext.inputData?.columnName))
+      .filter((cdr): cdr is ColumnDependentReference => cdr != null);
   }
 
   private async buildInitalValue(entity: TypedEntity, count: number): Promise<string> {

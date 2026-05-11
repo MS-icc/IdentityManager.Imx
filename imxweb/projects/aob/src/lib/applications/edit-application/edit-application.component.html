@@ -59,6 +59,12 @@
         </imx-entity-column-editor>
         <imx-entity-column-editor [column]="application?.NextRunDate?.Column" (controlCreated)="addAndValidate($event)">
         </imx-entity-column-editor>
+        <imx-cdr-editor
+          *ngFor="let cdr of customCdrList"
+          [cdr]="cdr"
+          (controlCreated)="applicationForm.addControl(cdr.column.ColumnName, $event)"
+        >
+        </imx-cdr-editor>
       </div>
     </form>
   </mat-card>

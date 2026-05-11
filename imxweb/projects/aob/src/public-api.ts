@@ -34,3 +34,4 @@ export { ApplicationsComponent } from './lib/applications/applications.component
 export { ApplicationsModule } from './lib/applications/applications.module';
 export { EntitlementsComponent } from './lib/entitlements/entitlements.component';
 export { EntitlementsModule } from './lib/entitlements/entitlements.module';
+export { additionalColumnsForApplicationKey } from './lib/applications/edit-application/edit-application.component';
