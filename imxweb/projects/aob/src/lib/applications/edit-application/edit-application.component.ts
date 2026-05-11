@@ -261,7 +261,7 @@ export class EditApplicationComponent implements ApplicationContent, OnInit {
       return;
     }
 
-    if (this.isEmptyOrZero(this.recertIntervalColumn.GetValue())) {
+    if (this.isEmptyOrZeroValue(this.recertIntervalColumn.GetValue())) {
       await this.recertIntervalColumn.PutValue(this.recertIntervalDefaultValue);
     }
   }
@@ -274,7 +274,7 @@ export class EditApplicationComponent implements ApplicationContent, OnInit {
     }
   }
 
-  private isEmptyOrZero(value: unknown): boolean {
+  private isEmptyOrZeroValue(value: unknown): boolean {
     if (value == null) {
       return true;
     }

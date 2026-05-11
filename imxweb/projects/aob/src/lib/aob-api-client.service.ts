@@ -92,16 +92,16 @@ export class AobApiService {
   }
 
   private async getCustomRecertIntervalValue(): Promise<number | undefined> {
-    const customClient = this.client as unknown as {
+    const clientWithCustomEndpoint = this.client as unknown as {
       portal_ccc_recertinterval_default_get?: () => Promise<unknown>;
     };
 
-    if (typeof customClient.portal_ccc_recertinterval_default_get !== 'function') {
+    if (typeof clientWithCustomEndpoint.portal_ccc_recertinterval_default_get !== 'function') {
       return undefined;
     }
 
     try {
-      return this.parseRecertInterval(await customClient.portal_ccc_recertinterval_default_get());
+      return this.parseRecertInterval(await clientWithCustomEndpoint.portal_ccc_recertinterval_default_get());
     } catch {
       return undefined;
     }
@@ -123,9 +123,8 @@ export class AobApiService {
     }
 
     if (value != null && typeof value === 'object') {
-      const nestedValue = (value as { Value?: unknown; value?: unknown; DataValue?: unknown }).Value
-        ?? (value as { Value?: unknown; value?: unknown; DataValue?: unknown }).value
-        ?? (value as { Value?: unknown; value?: unknown; DataValue?: unknown }).DataValue;
+      const typedValue = value as { Value?: unknown; value?: unknown; DataValue?: unknown };
+      const nestedValue = typedValue.Value ?? typedValue.value ?? typedValue.DataValue;
       return this.parseRecertInterval(nestedValue);
     }
 
