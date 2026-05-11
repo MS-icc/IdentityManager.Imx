@@ -33,6 +33,12 @@ import { AppConfigService, ClassloggerService, ImxTranslationProviderService } f
   providedIn: 'root',
 })
 export class AobApiService {
+  private readonly recertIntervalConfigPaths = [
+    'NConfig/CCC/RecertIntervalDefault',
+    'NConfig/CCC/RecertInterval',
+    'ServerLevelConfig/CCC/RecertIntervalDefault',
+  ];
+
   private tc: TypedClient;
   public get typedClient(): TypedClient {
     return this.tc;
@@ -62,5 +68,67 @@ export class AobApiService {
     } catch (e) {
       this.logger.error(this, e);
     }
+  }
+
+  public async getRecertIntervalDefault(): Promise<number | undefined> {
+    const customEndpointValue = await this.getCustomRecertIntervalValue();
+    if (customEndpointValue != null) {
+      return customEndpointValue;
+    }
+
+    for (const path of this.recertIntervalConfigPaths) {
+      try {
+        const value = await this.config.client.admin_apiconfigsingle_get('imx', path);
+        const parsedValue = this.parseRecertInterval(value);
+        if (parsedValue != null) {
+          return parsedValue;
+        }
+      } catch {
+        // Try next possible path.
+      }
+    }
+
+    return undefined;
+  }
+
+  private async getCustomRecertIntervalValue(): Promise<number | undefined> {
+    const customClient = this.client as unknown as {
+      portal_ccc_recertinterval_default_get?: () => Promise<unknown>;
+    };
+
+    if (typeof customClient.portal_ccc_recertinterval_default_get !== 'function') {
+      return undefined;
+    }
+
+    try {
+      return this.parseRecertInterval(await customClient.portal_ccc_recertinterval_default_get());
+    } catch {
+      return undefined;
+    }
+  }
+
+  private parseRecertInterval(value: unknown): number | undefined {
+    if (typeof value === 'number') {
+      return Number.isFinite(value) ? value : undefined;
+    }
+
+    if (typeof value === 'string') {
+      const trimmedValue = value.trim();
+      if (trimmedValue.length === 0) {
+        return undefined;
+      }
+
+      const parsedValue = Number(trimmedValue);
+      return Number.isFinite(parsedValue) ? parsedValue : undefined;
+    }
+
+    if (value != null && typeof value === 'object') {
+      const nestedValue = (value as { Value?: unknown; value?: unknown; DataValue?: unknown }).Value
+        ?? (value as { Value?: unknown; value?: unknown; DataValue?: unknown }).value
+        ?? (value as { Value?: unknown; value?: unknown; DataValue?: unknown }).DataValue;
+      return this.parseRecertInterval(nestedValue);
+    }
+
+    return undefined;
   }
 }

@@ -24,14 +24,14 @@
  *
  */
 
-import { Component, ErrorHandler, EventEmitter, Inject, Output } from '@angular/core';
+import { Component, ErrorHandler, EventEmitter, Inject, OnInit, Output } from '@angular/core';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { EUI_SIDESHEET_DATA, EuiLoadingService, EuiSidesheetRef } from '@elemental-ui/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { MatDialog } from '@angular/material/dialog';
 import { PortalApplication, PortalShops } from '@imx-modules/imx-api-aob';
-import { DbObjectKey, TypedEntity } from '@imx-modules/imx-qbm-dbts';
+import { DbObjectKey, IEntityColumn, TypedEntity } from '@imx-modules/imx-qbm-dbts';
 import {
   ClassloggerService,
   ConfirmationService,
@@ -41,6 +41,7 @@ import {
   TypedEntitySelectionData,
 } from 'qbm';
 import { AccountsService } from '../../accounts/accounts.service';
+import { AobApiService } from '../../aob-api-client.service';
 import { ShopsService } from '../../shops/shops.service';
 import { ApplicationContent } from '../application-content.interface';
 import { SelectionContainer } from './selection-container';
@@ -49,16 +50,18 @@ import { SelectionContainer } from './selection-container';
   selector: 'imx-edit-application',
   templateUrl: './edit-application.component.html',
 })
-export class EditApplicationComponent implements ApplicationContent {
+export class EditApplicationComponent implements ApplicationContent, OnInit {
   public readonly applicationForm = new UntypedFormGroup({});
 
   public shopsData: TypedEntitySelectionData;
   public accountsData: TypedEntitySelectionData;
+  public recertIntervalColumn: IEntityColumn | undefined;
 
   @Output() public readonly close = new EventEmitter<string>();
 
   private readonly shopsSelection = new SelectionContainer((item: PortalShops) => item.UID_ITShopOrg.value);
   private readonly accountsSelection = new SelectionContainer((item: TypedEntity) => item.GetEntity().GetKeys().join());
+  private recertIntervalDefaultValue: number | undefined;
 
   constructor(
     private readonly logger: ClassloggerService,
@@ -71,6 +74,7 @@ export class EditApplicationComponent implements ApplicationContent {
     private readonly confirmation: ConfirmationService,
     private readonly translate: TranslateService,
     private readonly ldsReplace: LdsReplacePipe,
+    private readonly aobApiService: AobApiService,
     @Inject(EUI_SIDESHEET_DATA) public application: PortalApplication,
     private readonly dialog: MatDialog,
   ) {
@@ -87,6 +91,10 @@ export class EditApplicationComponent implements ApplicationContent {
 
     this.accountsData = this.getAccountsData();
     this.shopsData = this.getShopsData();
+  }
+
+  public async ngOnInit(): Promise<void> {
+    await this.initializeRecertIntervalColumn();
   }
 
   public shopSelectionChanged(selection: TypedEntity[]): void {
@@ -113,6 +121,7 @@ export class EditApplicationComponent implements ApplicationContent {
       await this.saveShops();
 
       await this.saveAccounts();
+      await this.applyRecertIntervalDefault();
 
       this.logger.debug(this, 'submitData - commit application changes...');
 
@@ -235,5 +244,50 @@ export class EditApplicationComponent implements ApplicationContent {
       : count === 1
         ? entity.GetEntity().GetDisplay()
         : this.ldsReplace.transform(await this.translate.get('#LDS#{0} items selected').toPromise(), count);
+  }
+
+  private async initializeRecertIntervalColumn(): Promise<void> {
+    this.recertIntervalColumn = this.getColumn('ccc_recertinterval');
+    if (this.recertIntervalColumn == null) {
+      return;
+    }
+
+    this.recertIntervalDefaultValue = await this.aobApiService.getRecertIntervalDefault();
+    await this.applyRecertIntervalDefault();
+  }
+
+  private async applyRecertIntervalDefault(): Promise<void> {
+    if (this.recertIntervalColumn == null || this.recertIntervalDefaultValue == null) {
+      return;
+    }
+
+    if (this.isEmptyOrZero(this.recertIntervalColumn.GetValue())) {
+      await this.recertIntervalColumn.PutValue(this.recertIntervalDefaultValue);
+    }
+  }
+
+  private getColumn(columnName: string): IEntityColumn | undefined {
+    try {
+      return this.application?.GetEntity()?.GetColumn(columnName);
+    } catch {
+      return undefined;
+    }
+  }
+
+  private isEmptyOrZero(value: unknown): boolean {
+    if (value == null) {
+      return true;
+    }
+
+    if (typeof value === 'number') {
+      return value === 0;
+    }
+
+    if (typeof value === 'string') {
+      const trimmedValue = value.trim();
+      return trimmedValue.length === 0 || Number(trimmedValue) === 0;
+    }
+
+    return false;
   }
 }

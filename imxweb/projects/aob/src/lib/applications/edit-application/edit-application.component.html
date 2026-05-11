@@ -59,6 +59,8 @@
         </imx-entity-column-editor>
         <imx-entity-column-editor [column]="application?.NextRunDate?.Column" (controlCreated)="addAndValidate($event)">
         </imx-entity-column-editor>
+        <imx-entity-column-editor *ngIf="recertIntervalColumn" [column]="recertIntervalColumn" (controlCreated)="addAndValidate($event)">
+        </imx-entity-column-editor>
       </div>
     </form>
   </mat-card>
