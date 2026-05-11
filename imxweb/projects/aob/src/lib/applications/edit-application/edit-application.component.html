@@ -62,7 +62,7 @@
         <imx-cdr-editor
           *ngFor="let cdr of customCdrList"
           [cdr]="cdr"
-          (controlCreated)="applicationForm.addControl(cdr.column.ColumnName, $event)"
+          (controlCreated)="addAndValidateCdr(cdr.column.ColumnName, $event)"
         >
         </imx-cdr-editor>
       </div>

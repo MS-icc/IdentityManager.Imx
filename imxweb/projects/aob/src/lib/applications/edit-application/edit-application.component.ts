@@ -160,6 +160,11 @@ export class EditApplicationComponent implements ApplicationContent {
     event.control.updateValueAndValidity();
   }
 
+  public addAndValidateCdr(columnName: string, control: AbstractControl): void {
+    this.applicationForm.addControl(columnName, control);
+    control.updateValueAndValidity();
+  }
+
   private getShopsData(): TypedEntitySelectionData<PortalShops> {
     return {
       title: '#LDS#Heading Edit IT Shop Structures',
