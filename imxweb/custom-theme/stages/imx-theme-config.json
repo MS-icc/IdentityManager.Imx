@@ -1,0 +1,28 @@
+{
+  "Themes": [
+    {
+      "Name": "DevlTheme",
+      "DisplayName": "Development",
+      "Class": "devl-theme",
+      "Urls": [
+        "../Html_DevlTheme/devl-theme.css"
+      ]
+    },
+    {
+      "Name": "QualTheme",
+      "DisplayName": "Quality Assurance",
+      "Class": "qual-theme",
+      "Urls": [
+        "../Html_QualTheme/qual-theme.css"
+      ]
+    },
+    {
+      "Name": "ProdTheme",
+      "DisplayName": "Production",
+      "Class": "prod-theme",
+      "Urls": [
+        "../Html_ProdTheme/prod-theme.css"
+      ]
+    }
+  ]
+}

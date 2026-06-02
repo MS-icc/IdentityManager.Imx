@@ -3,6 +3,10 @@
   "version": "9.3.1",
   "private": true,
   "scripts": {
-    "build": "sass custom-theme.scss:custom-theme.css --load-path=..\\node_modules"
+    "build": "sass custom-theme.scss:custom-theme.css --load-path=../node_modules",
+    "build:devl": "sass stages/devl-theme.scss:stages/devl-theme.css --load-path=../node_modules",
+    "build:qual": "sass stages/qual-theme.scss:stages/qual-theme.css --load-path=../node_modules",
+    "build:prod": "sass stages/prod-theme.scss:stages/prod-theme.css --load-path=../node_modules",
+    "build:all-stages": "npm run build:devl && npm run build:qual && npm run build:prod"
   }
 }
