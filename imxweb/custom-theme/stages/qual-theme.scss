@@ -3,7 +3,7 @@
 // a quality-assurance / pre-production environment.
 // A fixed "QUAL" badge is rendered in the top-right corner.
 
-$theme_font_family: 'Source Sans Pro, "Helvetica Neue", sans-serif' !default;
+$theme_font_family: 'Source Sans Pro', "Helvetica Neue", sans-serif !default;
 
 @use 'sass:math';
 @use '@angular/material' as mat;

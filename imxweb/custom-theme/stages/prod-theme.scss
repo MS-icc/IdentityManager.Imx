@@ -3,7 +3,7 @@
 // No stage badge is displayed so end-users are not distracted by
 // an environment label in the production portal.
 
-$theme_font_family: 'Source Sans Pro, "Helvetica Neue", sans-serif' !default;
+$theme_font_family: 'Source Sans Pro', "Helvetica Neue", sans-serif !default;
 
 @use 'sass:math';
 @use '@angular/material' as mat;

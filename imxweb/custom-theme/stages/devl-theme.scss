@@ -3,7 +3,7 @@
 // A fixed "DEVL" badge is rendered in the top-right corner via CSS so that
 // every page view is unmistakably identified as the development stage.
 
-$theme_font_family: 'Source Sans Pro, "Helvetica Neue", sans-serif' !default;
+$theme_font_family: 'Source Sans Pro', "Helvetica Neue", sans-serif !default;
 
 @use 'sass:math';
 @use '@angular/material' as mat;
