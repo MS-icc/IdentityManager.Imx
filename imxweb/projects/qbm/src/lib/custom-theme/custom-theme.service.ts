@@ -26,22 +26,42 @@
 
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
+import { EuiThemeService } from '@elemental-ui/core';
 import { AppConfigService } from '../appConfig/appConfig.service';
 
 @Injectable({ providedIn: 'root' })
 export class CustomThemeService {
+  private loadThemesPromise: Promise<void> | undefined;
+
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private readonly config: AppConfigService,
+    private readonly themeService: EuiThemeService,
   ) {}
 
   public initialize(): void {
-    this.config.initializedSubject.subscribe(async () => {
-      await this.loadThemes();
+    this.config.initializedSubject.subscribe(() => {
+      void this.loadThemes();
+    });
+
+    if (this.config.client) {
+      void this.loadThemes();
+    }
+
+    this.themeService.getThemeSwitcherState().subscribe(() => {
+      this.applyCustomThemeClass();
     });
   }
 
   public async loadThemes(): Promise<void> {
+    if (!this.loadThemesPromise) {
+      this.loadThemesPromise = this.loadThemesInternal();
+    }
+
+    await this.loadThemesPromise;
+  }
+
+  private async loadThemesInternal(): Promise<void> {
     // load custom theme information from server
     const customThemes = await this.config.client.imx_themes_get();
 
@@ -53,6 +73,10 @@ export class CustomThemeService {
         continue;
       }
       for (var url of theme.Urls) {
+        if (head.querySelector(`link[rel="stylesheet"][href="${url}"]`)) {
+          continue;
+        }
+
         const style = this.document.createElement('link');
         style.rel = 'stylesheet';
         style.href = url;
@@ -67,11 +91,24 @@ export class CustomThemeService {
         class: m.Class ?? '',
       };
     });
+
+    this.applyCustomThemeClass();
   }
 
   private _customThemes: { name: string; class: string }[] = [];
 
   public get customThemes() {
     return this._customThemes;
+  }
+
+  private applyCustomThemeClass(): void {
+    const activeTheme = localStorage.getItem('eui-theme') ?? this.config.Config?.DefaultHtmlTheme ?? '';
+    const customThemeClasses = this._customThemes.map((theme) => theme.class).filter((themeClass) => !!themeClass);
+
+    this.document.body.classList.remove(...customThemeClasses);
+
+    if (customThemeClasses.includes(activeTheme)) {
+      this.document.body.classList.add(activeTheme);
+    }
   }
 }
