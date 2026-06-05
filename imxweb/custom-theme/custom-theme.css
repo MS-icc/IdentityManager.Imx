@@ -1,0 +1,18 @@
+/* Error: 'Hue "600" does not exist in palette. Available hues are: 0, 10, 20, 25, 30, 35, 40, 50, 60, 70, 80, 90, 95, 98, 99, 100, secondary, neutral, neutral-variant, error'
+ *    ,
+ * 38 |     default: _get-color-from-palette($base-palette, $default),
+ *    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ *    '
+ *   ../node_modules/@angular/material/core/m2/_theming.scss 38:14  define-palette()
+ *   custom-theme.scss 27:11                                        root stylesheet */
+
+body::before {
+  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
+      "Droid Sans Mono", monospace, monospace;
+  white-space: pre;
+  display: block;
+  padding: 1em;
+  margin-bottom: 1em;
+  border-bottom: 2px solid black;
+  content: "Error: 'Hue \"600\" does not exist in palette. Available hues are: 0, 10, 20, 25, 30, 35, 40, 50, 60, 70, 80, 90, 95, 98, 99, 100, secondary, neutral, neutral-variant, error'\a    \2577 \a 38 \2502      default: _get-color-from-palette($base-palette, $default),\a    \2502               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\a    \2575 \a   ../node_modules/@angular/material/core/m2/_theming.scss 38:14  define-palette()\a   custom-theme.scss 27:11                                        root stylesheet";
+}
