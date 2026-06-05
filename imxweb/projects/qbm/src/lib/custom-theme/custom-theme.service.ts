@@ -68,11 +68,11 @@ export class CustomThemeService {
     // for each custom theme, load the CSS and add it to the head
     const head = this.document.getElementsByTagName('head')[0];
 
-    for (var theme of customThemes) {
+    for (const theme of customThemes) {
       if (!theme.Urls) {
         continue;
       }
-      for (var url of theme.Urls) {
+      for (const url of theme.Urls) {
         if (head.querySelector(`link[rel="stylesheet"][href="${url}"]`)) {
           continue;
         }
