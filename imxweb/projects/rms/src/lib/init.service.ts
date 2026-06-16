@@ -84,7 +84,7 @@ export class InitService {
         private getByIdApi: {
           GetSchema(): EntitySchema;
           Get_byid(id: string): Promise<ExtendedTypedEntityCollection<TypedEntity, unknown>>;
-          Get?(): Promise<ExtendedTypedEntityCollection<PortalAdminRoleEset, unknown>>;
+          Get?(): Promise<ExtendedTypedEntityCollection<TypedEntity, unknown>>;
         },
       ) {}
 
