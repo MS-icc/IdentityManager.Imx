@@ -35,7 +35,7 @@ describe('ManagedRespEsetWrapper', () => {
       } as IEntity),
     });
 
-  it('should append membership-only roles and keep combined total count', async () => {
+  it('should merge membership-only roles and keep combined total count', async () => {
     const resp = jasmine.createSpyObj('resp', ['Get', 'GetSchema']);
     const interactiveResp = jasmine.createSpyObj('interactiveResp', ['Get_byid']);
     const memberships = jasmine.createSpyObj('memberships', ['Get']);

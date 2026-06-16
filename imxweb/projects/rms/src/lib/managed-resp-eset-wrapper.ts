@@ -58,7 +58,7 @@ export class ManagedRespEsetWrapper {
 
     const membershipRoleIds = memberships?.Data?.map((membership) => membership.UID_ESet.value).filter((uid): uid is string => !!uid) ?? [];
     const responsibilityIds = new Set(responsibilities.Data.map((role) => role.GetEntity().GetKeys()[0]).filter((uid): uid is string => !!uid));
-    const missingRoleIds = Array.from(new Set(membershipRoleIds.filter((uid) => !responsibilityIds.has(uid))));
+    const missingRoleIds = membershipRoleIds.filter((uid) => !responsibilityIds.has(uid));
     const missingRoles = await this.getMissingRoles(missingRoleIds);
 
     return this.applyPaging(
