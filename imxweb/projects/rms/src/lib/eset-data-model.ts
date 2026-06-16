@@ -26,13 +26,17 @@
 
 import { FilterData, DataModel } from '@imx-modules/imx-qbm-dbts';
 import { IRoleDataModel } from 'qer';
+import { EsetSubscriptionsApiService } from './eset-subscriptions-api.service';
 import { RmsApiService } from './rms-api-client.service';
 
 export class EsetDataModel implements IRoleDataModel {
-  constructor(private readonly api: RmsApiService) {}
+  constructor(
+    private readonly api: RmsApiService,
+    private readonly subscriptionsApi: EsetSubscriptionsApiService,
+  ) {}
   public async getModel(filter: FilterData[], isAdmin: boolean): Promise<DataModel> {
     return isAdmin
       ? this.api.client.portal_admin_role_eset_datamodel_get({ filter: filter })
-      : this.api.client.portal_resp_eset_datamodel_get({ filter: filter });
+      : this.subscriptionsApi.getDataModel(filter);
   }
 }

@@ -54,7 +54,7 @@ import {
 import { EsetDataModel } from './eset-data-model';
 import { EsetEntitlements } from './eset-entitlements';
 import { EsetMembership } from './eset-membership';
-import { ManagedRespEsetWrapper } from './managed-resp-eset-wrapper';
+import { EsetSubscriptionsApiService } from './eset-subscriptions-api.service';
 import { RmsApiService } from './rms-api-client.service';
 
 @Injectable({ providedIn: 'root' })
@@ -71,6 +71,7 @@ export class InitService {
     private readonly roleService: RoleService,
     private readonly identityRoleMembershipService: IdentityRoleMembershipsService,
     private readonly myResponsibilitiesRegistryService: MyResponsibilitiesRegistryService,
+    private readonly subscriptionsApi: EsetSubscriptionsApiService,
   ) {}
 
   public onInit(routes: Route[]): void {
@@ -118,12 +119,7 @@ export class InitService {
       canBeSplitSource: false,
       table: this.esetTag,
       respType: PortalRespEset,
-      resp: new ManagedRespEsetWrapper(
-        this.api.typedClient.PortalRespEset,
-        this.api.typedClient.PortalRespEsetInteractive,
-        this.api.typedClient.PortalPersonRolemembershipsEset,
-        this.session,
-      ),
+      resp: this.subscriptionsApi,
       adminType: PortalAdminRoleEset,
       admin: {
         get: async (parameter: any) =>
@@ -139,12 +135,12 @@ export class InitService {
           }),
       },
       adminSchema: this.api.typedClient.PortalAdminRoleEset.GetSchema(),
-      dataModel: new EsetDataModel(this.api),
+      dataModel: new EsetDataModel(this.api, this.subscriptionsApi),
       adminCanCreate: async () => {
         return (await this.api.client.portal_roles_config_systemroles_get()).EnableNewESet;
       },
       respCanCreate: () => Promise.resolve(false),
-      interactiveResp: new ApiWrapper(this.api.typedClient.PortalRespEsetInteractive),
+      interactiveResp: new ApiWrapper(this.subscriptionsApi),
       interactiveAdmin: new ApiWrapper(this.api.typedClient.PortalAdminRoleEsetInteractive),
       entitlements: new EsetEntitlements(this.api, this.translator),
       membership: new EsetMembership(this.api, this.session, this.translator),
@@ -157,11 +153,11 @@ export class InitService {
             if (PageSize) {
               method = isAdmin
                 ? factory.portal_admin_role_eset_get({ ...navigationState, withProperties, PageSize, StartIndex: 0 })
-                : factory.portal_resp_eset_get({ ...navigationState, withProperties, PageSize, StartIndex: 0 });
+                : this.subscriptionsApi.getExportMethod(withProperties, navigationState, PageSize);
             } else {
               method = isAdmin
                 ? factory.portal_admin_role_eset_get({ ...navigationState, withProperties })
-                : factory.portal_resp_eset_get({ ...navigationState, withProperties });
+                : this.subscriptionsApi.getExportMethod(withProperties, navigationState);
             }
             return new MethodDefinition(method);
           },
@@ -205,8 +201,8 @@ export class InitService {
           },
           contextId: HELP_CONTEXTUAL.DataExplorerSystemRoles,
           sortOrder: 8,
-          name: 'systemroles',
-          caption: '#LDS#Menu Entry System roles',
+          name: 'subscriptions',
+          caption: 'Subscriptions',
         };
       },
     );
@@ -239,6 +235,12 @@ export class InitService {
             navigationCommands: { commands: ['admin', 'dataexplorer'] },
             title: '#LDS#Menu Entry Data Explorer',
             sorting: '40-10',
+          },
+          {
+            id: 'RMS_Subscriptions',
+            navigationCommands: { commands: ['admin', 'dataexplorer', 'subscriptions'] },
+            title: 'Subscriptions',
+            sorting: '40-11',
           },
         ],
       };
