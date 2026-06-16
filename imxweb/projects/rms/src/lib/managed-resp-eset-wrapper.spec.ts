@@ -24,15 +24,16 @@
  *
  */
 
+import { PortalRespEset } from '@imx-modules/imx-api-rms';
+import { IEntity } from '@imx-modules/imx-qbm-dbts';
 import { ManagedRespEsetWrapper } from './managed-resp-eset-wrapper';
 
 describe('ManagedRespEsetWrapper', () => {
-  const createRole = (uid: string) =>
-    ({
+  const createRole = (uid: string): Pick<PortalRespEset, 'GetEntity'> => ({
       GetEntity: () => ({
         GetKeys: () => [uid],
-      }),
-    }) as any;
+      } as IEntity),
+    });
 
   it('should append membership-only roles and keep combined total count', async () => {
     const resp = jasmine.createSpyObj('resp', ['Get', 'GetSchema']);

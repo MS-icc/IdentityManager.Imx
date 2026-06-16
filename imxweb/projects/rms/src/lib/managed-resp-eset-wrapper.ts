@@ -25,6 +25,7 @@
  */
 
 import {
+  PortalPersonRolemembershipsEset,
   PortalPersonRolemembershipsEsetWrapper,
   PortalRespEset,
   PortalRespEsetInteractiveWrapper,
@@ -72,7 +73,7 @@ export class ManagedRespEsetWrapper {
 
   private async getMemberships(
     parametersOptional?: portal_resp_eset_get_args,
-  ): Promise<ExtendedTypedEntityCollection<any, unknown> | undefined> {
+  ): Promise<ExtendedTypedEntityCollection<PortalPersonRolemembershipsEset, unknown> | undefined> {
     const uidPerson = this.session.SessionState.UserUid || (await this.session.getSessionState()).UserUid;
     if (!uidPerson) {
       return undefined;
