@@ -54,6 +54,7 @@ import {
 import { EsetDataModel } from './eset-data-model';
 import { EsetEntitlements } from './eset-entitlements';
 import { EsetMembership } from './eset-membership';
+import { ManagedRespEsetWrapper } from './managed-resp-eset-wrapper';
 import { RmsApiService } from './rms-api-client.service';
 
 @Injectable({ providedIn: 'root' })
@@ -117,7 +118,12 @@ export class InitService {
       canBeSplitSource: false,
       table: this.esetTag,
       respType: PortalRespEset,
-      resp: this.api.typedClient.PortalRespEset,
+      resp: new ManagedRespEsetWrapper(
+        this.api.typedClient.PortalRespEset,
+        this.api.typedClient.PortalRespEsetInteractive,
+        this.api.typedClient.PortalPersonRolemembershipsEset,
+        this.session,
+      ),
       adminType: PortalAdminRoleEset,
       admin: {
         get: async (parameter: any) =>
