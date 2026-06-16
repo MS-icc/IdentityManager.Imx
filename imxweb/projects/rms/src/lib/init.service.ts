@@ -202,7 +202,7 @@ export class InitService {
           contextId: HELP_CONTEXTUAL.DataExplorerSystemRoles,
           sortOrder: 8,
           name: 'subscriptions',
-          caption: 'Subscriptions',
+          caption: '#LDS#Menu Entry Subscriptions',
         };
       },
     );
@@ -239,7 +239,7 @@ export class InitService {
           {
             id: 'RMS_Subscriptions',
             navigationCommands: { commands: ['admin', 'dataexplorer', 'subscriptions'] },
-            title: 'Subscriptions',
+            title: '#LDS#Menu Entry Subscriptions',
             sorting: '40-11',
           },
         ],

@@ -78,7 +78,7 @@ export class EsetSubscriptionsApiService {
     navigationState: CollectionLoadParameters,
     pageSize?: number,
   ): MethodDescriptor<EntityCollectionData> {
-    const query: any = pageSize
+    const query: CollectionLoadParameters & { withProperties: string } = pageSize
       ? { ...navigationState, withProperties, PageSize: pageSize, StartIndex: 0 }
       : { ...navigationState, withProperties };
     return {
